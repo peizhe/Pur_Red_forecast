@@ -1,6 +1,17 @@
 ## 天猫大数据竞赛——资金流入流出预测
 ###竞赛过程中的项目代码以及挖掘到的信息。
 　　核心是进行时间序列分析.
+**datasets：**<br>
+date_sort.txt: 将训练集中数据的采集日期排序<br>
+date<br>
+20130701<br>
+20130702<br>
+.<br>
+.<br>
+.<br>
+20140831<br>
+
+AfterApril_user_balance_table.txt: 从原始数据中截取4月份以后数据
 
 ##Tianchi 2015 golden league——The Purchase and Redemption Forecasts
 **Introduction**<br>
