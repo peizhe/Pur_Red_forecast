@@ -1,6 +1,8 @@
 ## 天猫大数据竞赛——资金流入流出预测
 ###竞赛过程中的项目代码以及挖掘到的信息。
-　　核心是进行时间序列分析.
+核心是进行时间序列分析.<br>
+
+
 **datasets：**<br>
 ####AfterApril_user_balance_table.txt: 从原始数据中截取4月份以后数据
 
@@ -24,7 +26,7 @@ DATE　 TIMES　 USR_NO　 PUR　USR_NO_PUR 　RED　 USR_NO_RED 　RED_PUR 　U
 
 ####usr_times.csv:April以后，超过5次操作的每位用户的操作次数和余额变化范围
 USR_ID　TIMES　MAX_T_BALANCE　MIN_T_BALANCE<br>
-<br>
+
 ####usr.csv: 每个ID号在整个时期被记录次数
 ID　TIMES<br>
 1　103<br>
