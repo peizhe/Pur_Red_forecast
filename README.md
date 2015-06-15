@@ -4,6 +4,8 @@
 
 
 **datasets：**<br>
+####关键数据.xlsx ：内涵每一天每一单项的总额
+
 ####AfterApril_user_balance_table.txt: 从原始数据中截取4月份以后数据
 
 ####date_red_pur.txt:每天申购赎回总额
