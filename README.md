@@ -1,6 +1,6 @@
 ## 天猫大数据竞赛——资金流入流出预测
 ###竞赛过程中的项目代码以及挖掘到的信息。
-核心是进行时间序列分析.<br>
+核心是进行时间序列分析: STL + HW + Special Point arrangement.<br>
 
 
 **datasets：**<br>
