@@ -1,4 +1,4 @@
-creat table if not exists lt_usr_balance_table_sum_baseline（
+CREAT TABLE if not exists lt_usr_balance_table_sum_baseline（
   report_date string comment '日期'
   total_purchase_amt bigint comment '日申购总额'
   total_redeem_amt bigint comment '日赎回总额'
