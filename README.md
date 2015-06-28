@@ -1,9 +1,16 @@
 ## 天猫大数据竞赛——资金流入流出预测
-###竞赛过程中的项目代码以及挖掘到的信息。
+###竞赛过程中挖掘到的信息
+我们更倾向于把赛题定义为一个回归问题或者时间序列分析问题。
 核心是进行时间序列分析: STL + HW + Special Point arrangement.<br>
 
 
-**datasets：**<br>
+
+
+###*阿里巴巴ODPS计算平台使用说明及注意事项*
+R脚本必须至少有一个数据源（OPDS表），并且ODPS表在R脚本中是data.frame的形式。
+
+
+###比赛过程中构建出的预处理数据集备注**datasets：**<br>
 ####成绩README.docx：记录每一次提交的数据的模型
 
 ####关键数据.xlsx ：内涵每一天每一单项的总额
@@ -31,13 +38,10 @@ DATE　 TIMES　 USR_NO　 PUR　USR_NO_PUR 　RED　 USR_NO_RED 　RED_PUR 　U
 ####usr_times.csv:April以后，超过5次操作的每位用户的操作次数和余额变化范围
 USR_ID　TIMES　MAX_T_BALANCE　MIN_T_BALANCE<br>
 
-####usr.csv: 每个ID号在整个时期被记录次数
+*usr.csv: 每个ID号在整个时期被记录次数*
 ID　TIMES<br>
 1　103<br>
 2　1<br>
-
-###*阿里巴巴ODPS计算平台使用说明及注意事项*
-R脚本必须至少有一个数据源（OPDS表），并且ODPS表在R脚本中是data.frame的形式。
 
 
 ##Tianchi 2015 golden league——The Purchase and Redemption Forecasts
