@@ -4,7 +4,6 @@
 
 ##竞赛过程中挖掘到的信息
 ---
-
 我们更倾向于把赛题定义为一个回归问题或者时间序列分析问题。
 核心是进行时间序列分析: STL + HW + Special Point arrangement.<br>
 
@@ -13,13 +12,11 @@
 
 ##阿里巴巴ODPS计算平台使用说明及注意事项
 ---
-
 R脚本必须至少有一个数据源（OPDS表），并且ODPS表在R脚本中是data.frame的形式。
 
 
 ##比赛过程中构建出的预处理数据集备注datasets：<br>
 ---
-
 **成绩README.docx：记录每一次提交的数据的模型**<br>
 **关键数据.xlsx ：内涵每一天每一单项的总额**<br>
 **AfterApril_user_balance_table.txt: 从原始数据中截取4月份以后数据**<br>
@@ -52,7 +49,6 @@ ID　TIMES<br>
 
 ##Tianchi 2015 golden league——The Purchase and Redemption Forecasts
 ---
-
 **Introduction**<br>
 　　Ant Financial Services Group (AFSG) processes cash inflow and outflow for millions of its members. As one can imagine, predicting future cash flows based on historical data is an important part of AFSG's business. Participants will be challenged to predict future cash flows based on users' historical purchase and redemption data to help Ant Financial Services Group (AFSG) improve its funds management abilities. (Purchases refers to funds inflow, while redemptions refers to funds outflow.)<br>
 　　This repository is used to store the source code for data analysis and important information obtained during data mining.<br>
