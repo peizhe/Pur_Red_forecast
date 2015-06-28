@@ -156,6 +156,55 @@ dataname$report_date = dataset2$report_date
 pai.outputPort(1, dataname)
 ```
 R脚本训练并预测赎回：
+```
+# 请链接输入数据
+# 链接完成后，系统会自动生成映射代码，将输入数据映射成变量参数，用户可直接使用
+# 切记不可修改系统生成代码，否则运行将报错
+#端口2的表数据映射成dataset2
+dataset2 <- pai.inputPort(2) # class: data.frame
+#端口1的表数据映射成dataset1
+dataset1 <- pai.inputPort(1) # class: data.frame
+
+formulaStr = "total_redeem_amt~ monday+tuesday +wednesday + thursday+friday+saturday+sunday"
+model = lm(as.formula(formulaStr),dataset1,interval="prediction")
+dataname <-data.frame( predict(model,dataset2,interval = "prediction",level=0.95,se.fit=FALSE))
+dataname$report_date = dataset2$report_date
+
+# 用户指定数据变量dataname(class:data.frame)到输出端口
+# 平台会将该数据生成ODPS表
+# dataname务必修改成自己的变量名称
+pai.outputPort(1, dataname)
+```
+4、合并申购、赎回结果并提交:
+```
+--合并申购赎回结果并提交：
+create table lt_baseline_commit as
+select   t1.report_date
+        ,cast(round(t1.fit,0) as bigint) purchase
+        ,t2.redeem
+from lt_basic_feature9_predict_purchase t1
+join(
+     select   report_date
+            ,cast(round(fit,0) as bigint) redeem
+    from lt_basic_feature9_predict_redeem
+) t2
+on t1.report_date = t2.report_date;
+
+--提交结果到官方评测表：
+insert overwrite table tc_comp_predict_table
+select * from lt_baseline_commit;
+--查看提交结果是否正确
+select * from tc_comp_predict_table;
+desc tc_comp_predict_table;
+```
+
+
+
+
+
+
+
+
 
 比赛过程中构建出的预处理数据集备注datasets：<br>
 ---
