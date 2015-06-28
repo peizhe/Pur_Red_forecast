@@ -13,8 +13,149 @@
 
 阿里巴巴ODPS计算平台使用说明及注意事项
 ---
-R脚本必须至少有一个数据源（OPDS表），并且ODPS表在R脚本中是data.frame的形式。
+因为建模主要考虑回归分析和时间序列建模，所以对于算法平台模型主要可以考虑使用GBDT回归和R脚本，其中GBDT回归注意设置：DminLeafSampleCount，并且控制DmaxDepth、DtreeCount，防止过拟合，本身GBDT更适合于大数据量的情况。此外R脚本中提供很多R的相关包可以使用：包的引入方式：library("包名")，内部赛复赛时提供的R包主要有：<br>
+```
+ISOweek :日期处理
+timeDate：时间处理
+forecast :时间预测
+RandomForest：随机森林
+rpart：决策树
+e1071：svm算法
+tseries：时间序列
+glmnet：线性回归
+discretization：离散化
+cluster：聚类
+entropy：信息熵、互信息，用于特征选择。
+reshape：数据矩阵整形
+nnet：神经网络
+```
+R脚本必须至少有一个数据源（OPDS表），并且ODPS表在R脚本中是data.frame的形式。<br>
+下面以构建baseline举例：<br>
+1、算法平台，上传要预测的9月份30天的日期数据：可以通过R脚本以data.frame的形式写入到ODPS表中。（PS：test=c(20140901,20140902)默认元素类型是double而非int，所以需要在R中做as.integer(20140901)转换，此外必须制定一个ODPS源）<br>
+```
+# 请链接输入数据
+# 链接完成后，系统会自动生成映射代码，将输入数据映射成变量参数，用户可直接使用
+# 切记不可修改系统生成代码，否则运行将报错
+#端口1的表数据映射成dataset1
+dataset1 <- pai.inputPort(1) # class: data.frame
+report_date = c(  
+    as.integer(20140901)
+, as.integer(20140902)
+, as.integer(20140903)
+, as.integer(20140904)
+, as.integer(20140905)
+, as.integer(20140906)
+, as.integer(20140907)
+, as.integer(20140908)
+, as.integer(20140909)
+, as.integer(20140910)
+, as.integer(20140911)
+, as.integer(20140912)
+, as.integer(20140913)
+, as.integer(20140914)
+, as.integer(20140915)
+, as.integer(20140916)
+, as.integer(20140917)
+, as.integer(20140918)
+, as.integer(20140919)
+, as.integer(20140920)
+, as.integer(20140921)
+, as.integer(20140922)
+, as.integer(20140923)
+, as.integer(20140924)
+, as.integer(20140925)
+, as.integer(20140926)
+, as.integer(20140927)
+, as.integer(20140928)
+, as.integer(20140929)
+, as.integer(20140930)
 
+                                  )
+dataname = data.frame(report_date)
+# 用户指定数据变量dataname(class:data.frame)到输出端口
+# 平台会将该数据生成ODPS表
+# dataname务必修改成自己的变量名称
+pai.outputPort(1, dataname)
+```
+2、开发平台,使用ODPS SQL构建特征（初级特征仅供参考）:
+```
+--日申购赎回汇总表
+create table if not exists lt_user_balance_table_sum_baseline(
+     report_date string comment '日期'
+    ,total_purchase_amt bigint comment '日申购总额'
+    ,total_redeem_amt bigint comment '日赎回总额'
+) comment '日申购赎回汇总表' partitioned by (ds string);--ds：不同的分区，不同的时间区间。
+insert overwrite table lt_user_balance_table_sum_baseline partition(ds='all')
+select   report_date
+        ,sum(total_purchase_amt) total_purchase_amt
+        ,sum(total_redeem_amt) total_redeem_amt
+from tianchi_test.user_balance_table --内部赛主办方提供的申购赎回记录表。
+group by report_date;
+--例如要用4-8月数据作为训练集
+insert overwrite table  lt_user_balance_table_sum_baseline partition(ds='45678month')
+select   report_date
+        ,total_purchase_amt
+        ,total_redeem_amt
+from lt_user_balance_table_sum_baseline
+where ds = 'all' and report_date >='20140401' and report_date < '20140901';
+
+--构建训练集基础特征：
+create table if not exists  lt_basic_feature4to8_baseline as 
+select   t1.report_date
+        ,case when t1.dayOfWeek=0 then  1 else 0 end as monday
+        ,case when t1.dayOfWeek=1 then  1 else 0 end as tuesday 
+        ,case when t1.dayOfWeek=2 then  1 else 0 end as wednesday
+        ,case when t1.dayOfWeek=3 then  1 else 0 end as thursday
+        ,case when t1.dayOfWeek=4 then  1 else 0 end as friday
+        ,case when t1.dayOfWeek=5 then  1 else 0 end as saturday
+        ,case when t1.dayOfWeek=6 then  1 else 0 end as sunday
+        ,total_purchase_amt
+        ,total_redeem_amt
+from (
+    select report_date
+         ,weekday(to_date(report_date,"yyyyMMdd")) dayOfWeek
+         ,total_purchase_amt
+         ,total_redeem_amt
+    from lt_user_balance_table_sum_baseline
+    where ds = '45678month' 
+) t1;
+--构建线上基础特征：
+create table if not exists  lt_basic_feature9_baseline as 
+select   t1.report_date
+        ,case when t1.dayOfWeek=0 then  1 else 0 end as monday
+        ,case when t1.dayOfWeek=1 then  1 else 0 end as tuesday 
+        ,case when t1.dayOfWeek=2 then  1 else 0 end as wednesday
+        ,case when t1.dayOfWeek=3 then  1 else 0 end as thursday
+        ,case when t1.dayOfWeek=4 then  1 else 0 end as friday
+        ,case when t1.dayOfWeek=5 then  1 else 0 end as saturday
+        ,case when t1.dayOfWeek=6 then  1 else 0 end as sunday
+from (
+    select report_date
+         ,weekday(to_date(report_date,"yyyyMMdd")) dayOfWeek
+    from lt_predict_day9month_baseline --9月份日期数据可以通过R脚本上传。
+) t1;
+```
+3、算法平台，训练模型并预测：这里使用R脚本的lm做线性回归模型。
+```
+# 请链接输入数据
+# 链接完成后，系统会自动生成映射代码，将输入数据映射成变量参数，用户可直接使用
+# 切记不可修改系统生成代码，否则运行将报错
+#端口2的表数据映射成dataset2
+dataset2 <- pai.inputPort(2) # class: data.frame
+#端口1的表数据映射成dataset1
+dataset1 <- pai.inputPort(1) # class: data.frame
+
+formulaStr = "total_purchase_amt~ monday+tuesday +wednesday + thursday+friday+saturday+sunday"
+model = lm(as.formula(formulaStr),dataset1,interval="prediction")
+dataname <-data.frame( predict(model,dataset2,interval = "prediction",level=0.95,se.fit=FALSE))
+dataname$report_date = dataset2$report_date
+
+# 用户指定数据变量dataname(class:data.frame)到输出端口
+# 平台会将该数据生成ODPS表
+# dataname务必修改成自己的变量名称
+pai.outputPort(1, dataname)
+```
+R脚本训练并预测赎回：
 
 比赛过程中构建出的预处理数据集备注datasets：<br>
 ---
