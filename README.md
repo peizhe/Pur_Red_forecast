@@ -38,7 +38,7 @@ DATE　 TIMES　 USR_NO　 PUR　USR_NO_PUR 　RED　 USR_NO_RED 　RED_PUR 　U
 ####usr_times.csv:April以后，超过5次操作的每位用户的操作次数和余额变化范围
 USR_ID　TIMES　MAX_T_BALANCE　MIN_T_BALANCE<br>
 
-*usr.csv: 每个ID号在整个时期被记录次数*
+**usr.csv: 每个ID号在整个时期被记录次数**
 ID　TIMES<br>
 1　103<br>
 2　1<br>
