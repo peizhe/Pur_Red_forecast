@@ -21,7 +21,7 @@
 1. 需要对整体数据做一个处理，比如数据预处理、分解、汇总，这个正好使用*ODPS*，语法同HIVE，可以查HIVE的语法手册<br>
 2. 汇总每日的申购、赎回数据分别放到表A 和 B中，然后用PAI平台的R脚本读取这两张表，做时间序列分析，或者回归，分别输出到结果C 和 D中；<br>
 3. 单点调优后，替换C 和 D中的某些日期的数据，然后合并结果到输出表E中<br>
-注：用ARIMA中的XREG参数做 时间序列分析 + 线性回归。(example code)[https://github.com/chibaofang/Pur_Red_forecast/blob/master/example%20code%20for%20ODPS.R]
+注：用ARIMA中的XREG参数做 时间序列分析 + 线性回归。[example code](https://github.com/chibaofang/Pur_Red_forecast/blob/master/example%20code%20for%20ODPS.R)
 
 
 **PAI-R**<br>
